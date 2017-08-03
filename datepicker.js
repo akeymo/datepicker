@@ -67,13 +67,27 @@
 					_this.render('next');
 				}
 			},false);
+
+			// 选中日期
+			$wrapper.addEventListener('click',function(e){
+				var $target = e.target;
+				if($target.tagName.toLowerCase() != 'td'){
+					return;
+				}
+
+				var date = new Date(_this.montnData.year, _this.montnData.month-1, $target.dataset.date);
+				$input.value = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+				$wrapper.classList.remove('ui-datepicker-wrapper-show');
+				isOpen = false;
+			},false);
 		},
 
 		getMonthData: function(year, month){
 			// 获取月份数据
 			var ret = [];
 
-			if(!year || !month){
+			if(year == undefined || month == undefined){
 				// 如果没有传值就获取当前日期
 				var today = new Date();
 				year = today.getFullYear();
@@ -159,7 +173,7 @@
 					html += '<tr>'
 				}
 
-				html += '<td>' + _this.montnData.dates[i].showDate + '</td>'
+				html += '<td data-date='+ _this.montnData.dates[i].date+'>' + _this.montnData.dates[i].showDate + '</td>'
 
 				if(i%7 === 6){
 					// 每星期最后一天
