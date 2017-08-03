@@ -5,13 +5,27 @@
 	<title>datepicker</title>
 	<link rel="stylesheet" type="text/css" href="./index.css">
 	<script src="./datepicker.js"></script>
+	<style type="text/css">
+		.date-input{
+			border:1px solid #ccc;
+			border-radius: 4px;
+			padding: 5px;
+			width: 230px;
+			height: 24px;
+			line-height: 24px;
+		}
+		.date-input:focus{
+			outline: 0 none;
+			border:1px solid #1abc9c;
+		}
+	</style>
 </head>
 <body>
 	<!-- 日历容器 -->
-	<div class="ui-datepicker-wrapper"></div>
+	<input type="text" name="inputDate" id="inputDate" class="date-input">
 
 	<script type="text/javascript">
-		datepicker.init('.ui-datepicker-wrapper');
+		datepicker.init('.date-input');
 	</script>
 </body>
 </html>

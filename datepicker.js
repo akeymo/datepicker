@@ -1,10 +1,72 @@
 (function(){
 	var datepicker = {
 
-		init: function($dom){
-			var _html = this.buildUi();
-			var ele = document.querySelector($dom);
-			ele.innerHTML = _html;
+		montnData: '',
+
+		render: function(direction){
+			var _this = this;
+			var year,month;
+			if(this.montnData){
+				year = this.montnData.year;
+				month = this.montnData.month;
+			}
+			if(direction === 'prev'){
+				month--;
+			}
+			if(direction === 'next'){
+				month++;
+			}
+			var _html = this.buildUi(year,month);
+			var $wrapper = document.querySelector('.ui-datepicker-wrapper');
+			if(!$wrapper){
+				// 第一次初始化
+				$wrapper = document.createElement('div');
+				$wrapper.className = 'ui-datepicker-wrapper';
+				document.body.appendChild($wrapper);
+			}
+
+			$wrapper.innerHTML = _html;
+		},
+
+		init: function(input){
+			var _this = this;
+			_this.render();
+			var $wrapper = document.querySelector('.ui-datepicker-wrapper')
+			var $input = document.querySelector(input);
+			var isOpen = false;
+			$input.addEventListener('click',function(){
+				if(isOpen){
+					$wrapper.classList.remove('ui-datepicker-wrapper-show');
+					isOpen = false;
+				}else{
+					$wrapper.classList.add('ui-datepicker-wrapper-show');
+
+					// 给日期插件定位
+					var top = $input.offsetTop;
+					var left = $input.offsetLeft;
+					var height = $input.offsetHeight;
+					$wrapper.style.top = top + height + 2 + 'px';
+					$wrapper.style.left = left + 'px';
+
+					isOpen = true;
+				}
+			},false);
+
+			// 月份点击切换
+			$wrapper.addEventListener('click',function(e){
+				var $target = e.target;
+				if(!$target.classList.contains('ui-datepicker-btn')){
+					return;
+				}
+
+				if($target.classList.contains('ui-datepicker-prev-btn')){
+					// 上个月
+					_this.render('prev');
+				}else if($target.classList.contains('ui-datepicker-next-btn')){
+					// 下个月
+					_this.render('next');
+				}
+			},false);
 		},
 
 		getMonthData: function(year, month){
@@ -68,12 +130,13 @@
 
 		buildUi: function(year, month){
 			// 生成日历html结构
-			var montnData = this.getMonthData(year,month);
+			var _this = this;
+			_this.montnData = this.getMonthData(year,month);
 
 			var html = '<div class="ui-datepicker-header">' 
 					 	+ '<a href="#" class="ui-datepicker-btn ui-datepicker-prev-btn">&lt;</a>' 
 						+ '<a href="#" class="ui-datepicker-btn ui-datepicker-next-btn">&gt;</a>' 
-						+ '<span class="ui-datepicker-curr-month">' + montnData.year + '-' + montnData.month +'</span>' 
+						+ '<span class="ui-datepicker-curr-month">' + _this.montnData.year + '-' + _this.montnData.month +'</span>' 
 						+ '</div>' 
 						+ '<div class="ui-datepicker-body">' 
 						+ '<table>' 
@@ -90,13 +153,13 @@
 						+ '</thead>'
 						+ '<tbody>';
 
-			for(var i=0, len=montnData.dates.length; i<len; i++){
+			for(var i=0, len=_this.montnData.dates.length; i<len; i++){
 				if(i%7 === 0){
 					// 每星期的第一天
 					html += '<tr>'
 				}
 
-				html += '<td>' + montnData.dates[i].showDate + '</td>'
+				html += '<td>' + _this.montnData.dates[i].showDate + '</td>'
 
 				if(i%7 === 6){
 					// 每星期最后一天
