@@ -119,10 +119,11 @@
 					// 上个月
 					thisMonth = month - 1;
 					showDate = lastDateOfLastMonth + date;
-				}else if(showDate>lastDay){
+				}else if(showDate>lastDate){
 					// 下个月
 					thisMonth = month + 1;
 					showDate = showDate - lastDate;
+
 				}
 
 				if(thisMonth === 0) thisMonth = 12;
